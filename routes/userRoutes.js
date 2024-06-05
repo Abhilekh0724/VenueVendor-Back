@@ -1,16 +1,10 @@
-//importing only router as u dont need the whole express
+const router = require("express").Router();
+const userControllers = require("../controllers/userControllers");
 
-const router = require('express').Router();
-const userControllers = require('../controllers/userControllers');
+// Create user API
+router.post("/create", userControllers.createUser);
 
-//Make a create user API
+// Login user API
+router.post("/login", userControllers.loginUser);
 
-router.post('/create', userControllers.createUser);
-
-//login user api
-router.post('/login',userControllers.loginUser)
-
-
-
-//exporting
 module.exports = router;
