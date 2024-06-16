@@ -1,59 +1,42 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const connectDb = require("./database/database");
-const cors = require("cors");
-const fileupload = require("express-fileupload");
+// index.js
 
-// Load environment variables
+const express = require('express');
+const dotenv = require('dotenv');
+const connectDb = require('./database/database');
+const cors = require('cors');
+const fileupload = require('express-fileupload');
+const path = require('path');
+const Profile = require('./models/profileModels');
+
 dotenv.config();
 
-// Creating an express app
 const app = express();
 
-// JSON Config
+// Middleware
 app.use(express.json());
-
-// File upload config
 app.use(fileupload());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
-// Make a public folder accessible from outside
-app.use(express.static("./public"));
-
-// CORS config
-const corsOptions = {
-  origin: true,
-  credentials: true,
-  optionSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
-
-// Connecting to the database
+// Connect to MongoDB
 connectDb();
 
-// Define the port
-const PORT = process.env.PORT || 5000;
+// Routes
+app.use('/api/user', require('./routes/userRoutes'));
+app.use('/api/profile', require('./routes/profileRoutes'));
 
-// Creating test routes or endpoints
-app.get("/test", (req, res) => {
-  res.send("Test API is working...!");
-});
+const PORT = process.env.PORT || 5500;
 
-app.get("/test_new", (req, res) => {
-  res.send("Test API is working...!");
-});
-
-// Configuring user routes
-app.use("/api/user", require("./routes/userRoutes"));
-
-// Assuming you have product routes
-app.use("/api/product", require("./routes/productRoutes"));
-
-// Starting the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+// Example routes
+app.get('/test', (req, res) => {
+  res.send('Test API is working!');
+});
+
 // API URLs for testing
-// http://localhost:5000/test
-// http://localhost:5000/test_new
-// User route example: http://localhost:5000/api/user/create
+// http://localhost:5500/test
+// http://localhost:5500/test_new
+// User route example: http://localhost:5500/api/user/create
