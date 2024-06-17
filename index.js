@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDb = require('./database/database');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
 const fileupload = require('express-fileupload');
 const path = require('path');
 
@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(fileupload());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({ // Enable CORS
+app.use(cors({
   origin: 'http://localhost:3000', // Replace with your frontend URL
   credentials: true
 }));
@@ -23,7 +23,7 @@ connectDb();
 
 // Routes
 app.use('/api/user', require('./routes/userRoutes'));
-// app.use('/api/profile', require('./routes/profileRoutes'));
+app.use('/api/profile', require('./routes/profileRoutes')); // Ensure this is correct
 
 const PORT = process.env.PORT || 5500;
 
