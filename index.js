@@ -24,6 +24,8 @@ connectDb();
 // Routes
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/profile', require('./routes/profileRoutes')); // Ensure this is correct
+app.use('/api/admin', require('./routes/adminRoutes'));
+
 
 const PORT = process.env.PORT || 5500;
 
