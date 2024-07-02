@@ -1,36 +1,68 @@
+// controllers/adminControllers.js
 const Category = require('../models/adminModels');
 const path = require('path');
 const fs = require('fs');
 
 // Create a new category
-exports.createCategory = async (req, res) => {
+const createCategory = async (req, res) => {
   const { name, info } = req.body;
+
+  if (!req.files || !req.files.photo) {
+    return res.status(400).json({
+      success: false,
+      message: "Photo not found!",
+    });
+  }
+
   const { photo } = req.files;
 
-  const photoPath = path.join(__dirname, '../public/uploads', photo.name);
+  const photoName = `${Date.now()}-${photo.name}`;
+  const photoUploadPath = path.join(__dirname, '../public/uploads', photoName);
 
   try {
-    // Save the file
-    await photo.mv(photoPath);
+    await photo.mv(photoUploadPath);
 
-    const newCategory = await Category.create({
+    const newCategory = new Category({
       name,
       info,
-      photo: `/uploads/${photo.name}`,
+      photo: `/uploads/${photoName}`,
     });
 
-    res.status(201).json({ success: true, category: newCategory });
+    const category = await newCategory.save();
+    res.status(201).json({
+      success: true,
+      message: "Category Created!",
+      data: category,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to create category', error });
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Internal server error",
+      error: error,
+    });
   }
 };
 
-// Get all categories
-exports.getAllCategories = async (req, res) => {
+// Fetch all categories
+const getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.status(200).json({ success: true, categories });
+    const categories = await Category.find({});
+    res.status(200).json({
+      success: true,
+      message: "Categories fetched successfully!",
+      categories: categories,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to fetch categories', error });
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
+};
+
+module.exports = {
+  createCategory,
+  getAllCategories,
 };
