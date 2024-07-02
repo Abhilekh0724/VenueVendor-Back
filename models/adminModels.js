@@ -1,6 +1,7 @@
+// models/adminModels.js
 const mongoose = require('mongoose');
 
-const adminSchema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -11,9 +12,9 @@ const adminSchema = new mongoose.Schema({
     required: true,
   },
   photo: {
-    type: String, // Store the file path or URL of the photo
+    type: String,
     required: true,
   },
 });
 
-module.exports = mongoose.model('Admin', adminSchema);
+module.exports = mongoose.model('Category', categorySchema);
