@@ -1,14 +1,22 @@
 const Category = require('../models/adminModels');
+const path = require('path');
+const fs = require('fs');
 
 // Create a new category
 exports.createCategory = async (req, res) => {
-  const { name, info, photo } = req.body;
+  const { name, info } = req.body;
+  const { photo } = req.files;
+
+  const photoPath = path.join(__dirname, '../public/uploads', photo.name);
 
   try {
+    // Save the file
+    await photo.mv(photoPath);
+
     const newCategory = await Category.create({
       name,
       info,
-      photo,
+      photo: `/uploads/${photo.name}`,
     });
 
     res.status(201).json({ success: true, category: newCategory });
