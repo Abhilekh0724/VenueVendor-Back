@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(fileupload());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your frontend URL
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
@@ -23,17 +23,12 @@ connectDb();
 
 // Routes
 app.use('/api/user', require('./routes/userRoutes'));
-app.use('/api/profile', require('./routes/profileRoutes')); // Ensure this is correct
+app.use('/api/profile', require('./routes/profileRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
-
+app.use('/api/review', require('./routes/reviewRoutes'));
 
 const PORT = process.env.PORT || 5500;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
-
-// Example routes
-app.get('/test', (req, res) => {
-  res.send('Test API is working!');
 });
