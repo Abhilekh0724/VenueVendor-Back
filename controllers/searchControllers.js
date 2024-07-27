@@ -1,6 +1,4 @@
-const Category = require('../models/adminModels'); // Ensure the correct path
-const path = require('path');
-const fs = require('fs');
+const Category = require('../models/adminModels');
 
 const searchCategory = async (req, res) => {
   const searchQuery = req.query.q || "";
