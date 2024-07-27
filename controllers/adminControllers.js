@@ -1,11 +1,9 @@
-// controllers/adminControllers.js
 const Category = require('../models/adminModels');
 const path = require('path');
-const fs = require('fs');
 
 // Create a new category
 const createCategory = async (req, res) => {
-  const { name, info } = req.body;
+  const { price, name, info } = req.body;
 
   if (!req.files || !req.files.photo) {
     return res.status(400).json({
@@ -15,7 +13,6 @@ const createCategory = async (req, res) => {
   }
 
   const { photo } = req.files;
-
   const photoName = `${Date.now()}-${photo.name}`;
   const photoUploadPath = path.join(__dirname, '../public/uploads', photoName);
 
@@ -23,6 +20,7 @@ const createCategory = async (req, res) => {
     await photo.mv(photoUploadPath);
 
     const newCategory = new Category({
+      price,
       name,
       info,
       photo: `/uploads/${photoName}`,
