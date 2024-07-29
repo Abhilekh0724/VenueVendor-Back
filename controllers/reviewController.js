@@ -35,12 +35,13 @@ exports.createReview = async (req, res) => {
     }
 
     // Create and save the review
-    const review = await Review.create({
+    const review = new Review({
       categoryId,
       userId,
       comment,
       rating,
     });
+    await review.save();
 
     // Optionally, update the category's average rating
     const reviews = await Review.find({ categoryId });
@@ -61,6 +62,11 @@ exports.getReviewsByCategory = async (req, res) => {
   const { categoryId } = req.params;
 
   try {
+    // Validate categoryId
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ success: false, message: 'Invalid categoryId' });
+    }
+
     // Get all reviews for the category
     const reviews = await Review.find({ categoryId }).populate('userId', 'firstName lastName');
     res.status(200).json({ success: true, reviews });
