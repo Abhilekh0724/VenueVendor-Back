@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 exports.createBooking = async (req, res) => {
   const { categoryId, bookingDate, userId } = req.body;
 
-  // Validate required fields
+  console.log('Received request to create booking:', req.body);
+
   if (!categoryId || !bookingDate || !userId) {
     return res.status(400).json({
       success: false,
@@ -12,7 +13,6 @@ exports.createBooking = async (req, res) => {
     });
   }
 
-  // Validate ObjectIds
   if (!mongoose.Types.ObjectId.isValid(categoryId)) {
     return res.status(400).json({
       success: false,
@@ -52,7 +52,8 @@ exports.createBooking = async (req, res) => {
 exports.getBookingsByCategory = async (req, res) => {
   const { categoryId } = req.params;
 
-  // Validate categoryId
+  console.log('Received request to get bookings by category:', categoryId);
+
   if (!mongoose.Types.ObjectId.isValid(categoryId)) {
     return res.status(400).json({
       success: false,
@@ -78,7 +79,8 @@ exports.getBookingsByCategory = async (req, res) => {
 exports.getBookingsByUser = async (req, res) => {
   const { userId } = req.body;
 
-  // Validate userId
+  console.log('Received request to get bookings by user:', userId);
+
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res.status(400).json({
       success: false,

@@ -2,12 +2,12 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  categoryId: {
+categoryId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+    ref: 'Category', // Ensure this is correct
     required: true,
-  },
-  userId: {
+    },
+userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
