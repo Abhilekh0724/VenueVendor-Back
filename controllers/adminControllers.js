@@ -60,7 +60,91 @@ const getAllCategories = async (req, res) => {
   }
 };
 
+// Update a category
+const updateCategory = async (req, res) => {
+  const { id } = req.params;
+  const { price, name, info } = req.body;
+  let photoPath;
+
+  if (req.files && req.files.photo) {
+    const { photo } = req.files;
+    const photoName = `${Date.now()}-${photo.name}`;
+    const photoUploadPath = path.join(__dirname, '../public/uploads', photoName);
+    try {
+      await photo.mv(photoUploadPath);
+      photoPath = `/uploads/${photoName}`;
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        success: false,
+        message: "Error uploading photo",
+      });
+    }
+  }
+
+  try {
+    const updatedCategory = await Category.findByIdAndUpdate(
+      id,
+      {
+        price,
+        name,
+        info,
+        ...(photoPath && { photo: photoPath }), // Only include photo if it was updated
+      },
+      { new: true }
+    );
+
+    if (!updatedCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Category updated successfully!",
+      data: updatedCategory,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// Delete a category
+const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedCategory = await Category.findByIdAndDelete(id);
+
+    if (!deletedCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Category deleted successfully!",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   createCategory,
   getAllCategories,
+  updateCategory,
+  deleteCategory,
 };

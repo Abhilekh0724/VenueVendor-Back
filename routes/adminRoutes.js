@@ -7,6 +7,8 @@ const searchControllers = require('../controllers/searchControllers');
 // Admin routes
 router.post('/create', adminControllers.createCategory);
 router.get('/get', adminControllers.getAllCategories);
+router.put('/update/:id', adminControllers.updateCategory); // Update route
+router.delete('/delete/:id', adminControllers.deleteCategory); // Delete route
 router.get('/search', searchControllers.searchCategory);
 
 // Single category route

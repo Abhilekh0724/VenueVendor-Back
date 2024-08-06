@@ -6,6 +6,7 @@ exports.createBooking = async (req, res) => {
 
   console.log('Received request to create booking:', req.body);
 
+  // Validate required fields
   if (!categoryId || !bookingDate || !userId) {
     return res.status(400).json({
       success: false,
@@ -13,6 +14,7 @@ exports.createBooking = async (req, res) => {
     });
   }
 
+  // Validate ObjectIds
   if (!mongoose.Types.ObjectId.isValid(categoryId)) {
     return res.status(400).json({
       success: false,
@@ -27,7 +29,26 @@ exports.createBooking = async (req, res) => {
     });
   }
 
+  // Validate booking date is not in the past
+  const currentDate = new Date();
+  if (new Date(bookingDate) < currentDate) {
+    return res.status(400).json({
+      success: false,
+      message: 'Booking date cannot be in the past.'
+    });
+  }
+
   try {
+    // Check if the date is already booked for the given category
+    const existingBooking = await Booking.findOne({ categoryId, bookingDate });
+    if (existingBooking) {
+      return res.status(400).json({
+        success: false,
+        message: 'The date is already reserved for this category.'
+      });
+    }
+
+    // Create a new booking
     const newBooking = new Booking({
       userId,
       categoryId,
@@ -38,7 +59,8 @@ exports.createBooking = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      booking: savedBooking
+      booking: savedBooking,
+      message: 'Booking successful. Payment should be made 5 days before the booked date, or it will get canceled.'
     });
   } catch (error) {
     console.error('Error creating booking:', error);
@@ -48,6 +70,8 @@ exports.createBooking = async (req, res) => {
     });
   }
 };
+
+// Other functions remain the same
 
 exports.getBookingsByCategory = async (req, res) => {
   const { categoryId } = req.params;
