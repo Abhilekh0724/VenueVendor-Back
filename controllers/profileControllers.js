@@ -4,7 +4,7 @@ const Profile = require('../models/profileModels');
 
 exports.uploadProfilePic = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user.id; // Get userId from req.user set by authGuard
 
     if (!req.files || !req.files.profilePic) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
