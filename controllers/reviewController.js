@@ -5,21 +5,18 @@ const Category = require('../models/adminModels'); // Ensure this is the correct
 
 // Create a new review
 exports.createReview = async (req, res) => {
-  const { categoryId, userId, comment, rating } = req.body;
+  const { categoryId, comment, rating } = req.body;
+  const userId = req.user.id; // Extract userId from the token
 
   try {
     // Validate inputs
-    if (!categoryId || !userId || !comment || !rating) {
+    if (!categoryId || !comment || !rating) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     // Validate ObjectIds
     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
       return res.status(400).json({ success: false, message: 'Invalid categoryId' });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ success: false, message: 'Invalid userId' });
     }
 
     // Check if user exists
