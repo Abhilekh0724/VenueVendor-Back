@@ -14,7 +14,7 @@ const createUser = async (req, res) => {
   }
 
   try {
-    const existingUser = await userModel.findOne({ email: email });
+    const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.json({
         success: false,
@@ -26,9 +26,9 @@ const createUser = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, randomSalt);
 
     const newUser = new userModel({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
+      firstName,
+      lastName,
+      email,
       password: hashPassword,
     });
 
@@ -60,7 +60,7 @@ const loginUser = async (req, res) => {
   }
 
   try {
-    const user = await userModel.findOne({ email: email });
+    const user = await userModel.findOne({ email });
 
     if (!user) {
       return res.json({
@@ -77,12 +77,12 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = await jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
 
     res.json({
       success: true,
       message: "User logged in successfully!",
-      token: token,
+      token,
       userData: user,
     });
   } catch (error) {

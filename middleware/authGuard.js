@@ -1,89 +1,65 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const authGuard = (req, res, next) => {
-  //  #. Check incoming data
-  console.log(req.headers);
-  // 1. Get auth headers (content type, authorization ...)
-  // 2. Get 'authorization'
   const authHeader = req.headers.authorization;
 
-  // 3. if not found stop the process(res)
   if (!authHeader) {
     return res.status(400).json({
       success: false,
-      message: "Authorization header not found!",
+      message: 'Authorization header not found!',
     });
   }
-  // 4. authorization format : 'Bearer tokendfajsjfhd'
 
-  // 5. grt only token by splitting by 'space' (0-Bearer,1-token)
-  const token = authHeader.split(" ")[1];
-  // 6. if token not found or mismatch (stop the process, res)
+  const token = authHeader.split(' ')[1];
 
-  if (!token || token === "") {
+  if (!token || token === '') {
     return res.status(400).json({
       success: false,
-      message: "Token is missing!",
+      message: 'Token is missing!',
     });
   }
-  // 7. verify the token
-  // 8. if verify, next
-  // 9. not : not authenticated
+
   try {
-    // verify the token and get user information
     const decodedUser = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decodedUser;
+    console.log('Decoded user:', decodedUser);
     next();
   } catch (error) {
     console.log(error);
     res.status(400).json({
       success: false,
-      message: "Not Authenticated",
+      message: 'Not Authenticated',
     });
   }
 };
 
-// admin Guard
-
 const adminGuard = (req, res, next) => {
-  //  #. Check incoming data
-  console.log(req.headers);
-  // 1. Get auth headers (content type, authorization ...)
-  // 2. Get 'authorization'
   const authHeader = req.headers.authorization;
 
-  // 3. if not found stop the process(res)
   if (!authHeader) {
     return res.status(400).json({
       success: false,
-      message: "Authorization header not found!",
+      message: 'Authorization header not found!',
     });
   }
-  // 4. authorization format : 'Bearer tokendfajsjfhd'
 
-  // 5. grt only token by splitting by 'space' (0-Bearer,1-token)
-  const token = authHeader.split(" ")[1];
-  // 6. if token not found or mismatch (stop the process, res)
+  const token = authHeader.split(' ')[1];
 
-  if (!token || token === "") {
+  if (!token || token === '') {
     return res.status(400).json({
       success: false,
-      message: "Token is missing!",
+      message: 'Token is missing!',
     });
   }
-  // 7. verify the token
-  // 8. if verify, next
-  // 9. not : not authenticated
+
   try {
-    // verify the token and get user information
     const decodedUser = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decodedUser;
 
-    // check user is admin or not
     if (!req.user.isAdmin) {
       return res.status(400).json({
         success: false,
-        message: "Permission Denied!",
+        message: 'Permission Denied!',
       });
     }
     next();
@@ -91,7 +67,7 @@ const adminGuard = (req, res, next) => {
     console.log(error);
     res.status(400).json({
       success: false,
-      message: "Not Authenticated",
+      message: 'Not Authenticated',
     });
   }
 };
