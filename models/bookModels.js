@@ -1,13 +1,12 @@
-// models/bookModels.js
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-categoryId: {
+  categoryId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category', // Ensure this is correct
+    ref: 'Category',
     required: true,
-    },
-userId: {
+  },
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -15,6 +14,10 @@ userId: {
   bookingDate: {
     type: Date,
     required: true,
+  },
+  status: {
+    type: String,
+    default: 'active', // Use 'canceled' to mark canceled bookings
   },
   createdAt: {
     type: Date,
