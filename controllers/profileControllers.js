@@ -32,3 +32,20 @@ exports.uploadProfilePic = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error', error });
   }
 };
+
+exports.getUserInfo = async (req, res) => {
+  try {
+    const userId = req.user.id; // Get userId from req.user set by authGuard
+
+    // Find the user's profile information
+    const userProfile = await Profile.findOne({ userId: userId });
+
+    if (!userProfile) {
+      return res.status(404).json({ success: false, message: 'User profile not found' });
+    }
+
+    return res.status(200).json({ success: true, profile: userProfile });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Server error', error });
+  }
+};
