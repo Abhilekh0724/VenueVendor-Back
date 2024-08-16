@@ -27,9 +27,13 @@ app.use('/api/profile', require('./routes/profileRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/review', require('./routes/reviewRoutes'));
 app.use('/api/book', require('./routes/bookRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 
-const PORT = process.env.PORT || 5500;
+if (require.main === module) {
+  const PORT = process.env.PORT || 5500;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;
